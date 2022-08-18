@@ -4,7 +4,7 @@
 
 My C++ implementation to solve the Advent Of Code puzzles.
 
-##Usage
+## Usage
 
 On the main.cpp file instaciate the class of the day you want to solve and compile the program.
 
