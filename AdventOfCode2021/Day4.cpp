@@ -3,13 +3,16 @@
 #include <algorithm>
 #include <string>
 #include "Day4.h"
+#include "Functions.h"
 
-std::vector<std::string> SplitStr(std::string str, std::string deli);
+
 
 void Day4::Solve() {
 
     // What will your final score be if you choose that board ?
     // Figure out which board will win last. Once it wins, what would its final score be?
+
+    Functions f;
 
     std::ifstream inputFile("Day4.input");
     std::string aux = "";
@@ -26,7 +29,7 @@ void Day4::Solve() {
 
         std::getline(inputFile, aux);
 
-        splitResultString = SplitStr(aux, ",");
+        splitResultString = f.SplitStr(aux, ",");
 
         std::transform(splitResultString.begin(), splitResultString.end(), std::back_inserter(inputOrder),
             [&](std::string s)
@@ -38,7 +41,7 @@ void Day4::Solve() {
         {
             if (aux != "")
             {
-                splitResultString = SplitStr(aux, " ");
+                splitResultString = f.SplitStr(aux, " ");
 
                 for (auto&& element : splitResultString)
                 {
@@ -186,21 +189,4 @@ void Day4::Solve() {
 
     std::cout << "The final score if the first winning board is chosen is: " << pointsFirstWinBingoBoard << std::endl;
     std::cout << "The final score if the last winning board is chosen is: " << pointsLastWinBingoBoard << std::endl;
-}
-
-std::vector<std::string> SplitStr(std::string str, std::string deli = " ")
-{
-    int start = 0;
-    int end = str.find(deli);
-
-    std::vector<std::string> output;
-
-    while (end != -1)
-    {
-        output.push_back(str.substr(start, end - start));
-        start = end + deli.size();
-        end = str.find(deli, start);
-    }
-    output.push_back(str.substr(start, end - start));
-    return output;
 }

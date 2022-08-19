@@ -5,14 +5,16 @@
 #include <map>
 #include <math.h>
 #include "Day3.h"
+#include "Functions.h"
 
-int ConvertToDecimal(long long number);
 std::vector<std::string> find(std::vector<std::string> input, int flag);
 
 void Day3::Solve() {
 
     // What is the power consumption of the submarine ?
     // What is the life support rating of the submarine?
+
+    Functions f;
 
     std::ifstream inputFile("Day3.input");
     std::string aux = "";
@@ -63,8 +65,8 @@ void Day3::Solve() {
         }
     }
 
-    int gammaRateDecimal = ConvertToDecimal(std::stoll(gammaRate));
-    int epsilonRateDecimal = ConvertToDecimal(std::stoll(epsilonRate));
+    int gammaRateDecimal = f.ConvertToDecimal(std::stoll(gammaRate));
+    int epsilonRateDecimal = f.ConvertToDecimal(std::stoll(epsilonRate));
 
     int output = gammaRateDecimal * epsilonRateDecimal;
 
@@ -73,27 +75,12 @@ void Day3::Solve() {
     std::vector<std::string> oxygen = find(input, 0);
     std::vector<std::string> carbonDioxide = find(input, 1);
 
-    int oxygenDecimal = ConvertToDecimal(std::stoll(oxygen[0]));
-    int carbonDioxideDecimal = ConvertToDecimal(std::stoll(carbonDioxide[0]));
+    int oxygenDecimal = f.ConvertToDecimal(std::stoll(oxygen[0]));
+    int carbonDioxideDecimal = f.ConvertToDecimal(std::stoll(carbonDioxide[0]));
 
     output = oxygenDecimal * carbonDioxideDecimal;
 
     std::cout << "The life support rating of the submarine is: " << output << std::endl;
-}
-
-int ConvertToDecimal(long long number)
-{
-    int dec = 0, i = 0, rem;
-
-    while (number != 0)
-    {
-        rem = number % 10;
-        number /= 10;
-        dec += rem * pow(2, i);
-        ++i;
-    }
-
-    return dec;
 }
 
 // flag values are 0 and any other integer, 0 for oxygen and other integer for co2
