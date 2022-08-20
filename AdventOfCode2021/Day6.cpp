@@ -2,6 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <array>
+#include <numeric>
 #include "Day6.h"
 #include "Functions.h"
 
@@ -9,13 +11,19 @@
 void Day6::Solve() {
 
 	// How many lanternfish would there be after 80 days?
+	// How many lanternfish would there be after 256 days?
 
+	CalculateForDays(80);
+	CalculateForDays(256);
+}
+
+void Day6::CalculateForDays(const int days) {
 	Functions f;
 
 	std::ifstream inputFile("Day6.input");
 	std::string aux = "";
 	std::vector<std::string> splitResultString;
-	std::vector<int> lanterFish;
+	std::vector<int> initialFish;
 
 	if (inputFile.is_open())
 	{
@@ -25,32 +33,41 @@ void Day6::Solve() {
 
 			for (auto&& element : splitResultString)
 			{
-				lanterFish.push_back(stoi(element));
+				initialFish.push_back(stoi(element));
 			}
 		}
 	}
 
-	int fishToAdd = 0;
+	constexpr int cycle = 9;
 
-	for (size_t i = 0; i < 80; i++)
+	std::array<int64_t, cycle> currentFish{};
+
+	for (auto&& daysLeftCycle : initialFish)
 	{
-		for (auto&& element :lanterFish)
-		{
-			if (element > 0) {
-				element--;
-			}
-			else if (element == 0) {
-				element = 6;
-				fishToAdd++;
-			}
-		}
-
-		for (size_t i = 0; i < fishToAdd; i++)
-		{
-			lanterFish.push_back(8);
-		}
-		fishToAdd = 0;
+		++currentFish[daysLeftCycle];
 	}
 
-	std::cout << "After 80 days there are: " << lanterFish.size() << " lanternfish" << std::endl;
-}	
+	for (size_t i = 0; i < days; i++)
+	{
+		std::array<int64_t, cycle> nextFish{};
+
+		nextFish[6] = currentFish[0];
+		nextFish[8] = currentFish[0];
+
+		for (size_t i = 1; i < currentFish.size(); i++)
+		{
+			nextFish[i - 1] += currentFish[i];
+		}
+
+		currentFish = nextFish;
+	}
+
+	int64_t output = 0;
+
+	for (size_t i = 0; i < currentFish.size(); i++)
+	{
+		output += currentFish[i];
+	}
+
+	std::cout << "After 80 days there are: " << output << " lanternfish" << std::endl;
+}
