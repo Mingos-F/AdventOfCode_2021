@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -9,15 +10,14 @@
 void Day9::Solve() {
 
 	// What is the sum of the risk levels of all low points on your heightmap?
-
-	Functions f;
+	// What do you get if you multiply together the sizes of the three largest basins?
 
 	std::ifstream inputFile("Day9.input");
 	std::string aux = "";
 	std::vector<std::vector<int>> heigthMatrix;
 	std::vector<int> line;
 
-	std::vector<int> output;
+	std::vector<ValueLocationMatrix> lowPoints;
 
 	if (inputFile.is_open())
 	{
@@ -38,78 +38,130 @@ void Day9::Solve() {
 		{
 			int smallestAdjacentValue = 9;
 
-			int upValue = Up(heigthMatrix, i, j);
-			int downValue = Down(heigthMatrix, i, j);
-			int leftValue = Left(heigthMatrix, i, j);
-			int rightValue = Right(heigthMatrix, i, j);
+			ValueLocationMatrix upValue = Up(heigthMatrix, i, j);
+			ValueLocationMatrix downValue = Down(heigthMatrix, i, j);
+			ValueLocationMatrix leftValue = Left(heigthMatrix, i, j);
+			ValueLocationMatrix rightValue = Right(heigthMatrix, i, j);
 
-			if (upValue != -1) {
-				smallestAdjacentValue = std::min(smallestAdjacentValue, upValue);
+			if (upValue.value != -1) {
+				smallestAdjacentValue = std::min(smallestAdjacentValue, upValue.value);
 			}
 
-			if (downValue != -1) {
-				smallestAdjacentValue = std::min(smallestAdjacentValue, downValue);
+			if (downValue.value != -1) {
+				smallestAdjacentValue = std::min(smallestAdjacentValue, downValue.value);
 			}
 
-			if (leftValue != -1) {
-				smallestAdjacentValue = std::min(smallestAdjacentValue, leftValue);
+			if (leftValue.value != -1) {
+				smallestAdjacentValue = std::min(smallestAdjacentValue, leftValue.value);
 			}
 
-			if (rightValue != -1) {
-				smallestAdjacentValue = std::min(smallestAdjacentValue, rightValue);
+			if (rightValue.value != -1) {
+				smallestAdjacentValue = std::min(smallestAdjacentValue, rightValue.value);
 			}
 
 			if (heigthMatrix[i][j] < smallestAdjacentValue) {
-				output.push_back(heigthMatrix[i][j]);
+				ValueLocationMatrix vlm(heigthMatrix[i][j],i,j);
+				lowPoints.push_back(vlm);
 			}
 		}
 	}
 
-	for (auto&& element : output)
+	std::vector<int> basinSize;
+
+	for (auto&& element : lowPoints)
 	{
-		element += 1;
+		basinSize.push_back(CalculateBasinSize(element, heigthMatrix));
 	}
 
-	std::cout << "The sum of the risk is: " << std::accumulate(output.begin(), output.end(), 0) << std::endl;
+	std::sort(basinSize.begin(), basinSize.end(), std::greater<int>{});
+
+	int output = 0;
+
+	for (auto&& element : lowPoints)
+	{
+		element.value += 1;
+		output += element.value;
+	}
+
+	std::cout << "The sum of the risk is: " << output << std::endl;
+	std::cout << "The 3 largest basins multiplied euqlas: " << (basinSize[0] * basinSize[1] * basinSize[2]) << std::endl;
 }
 
-int Day9::Up(std::vector<std::vector<int>>& matrix, int line, int column) {
+Day9::ValueLocationMatrix Day9::Up(std::vector<std::vector<int>>& matrix, size_t line, size_t column) {
 
-	int output = -1;
+	ValueLocationMatrix output(-1,-1,-1);
 
 	if (line > 0) {
-		output = matrix[--line][column];
+		--line;
+		output.value = matrix[line][column];
+		output.line = line;
+		output.column = column;
 	}
 
 	return output;
 }
 
-int Day9::Down(std::vector<std::vector<int>>& matrix, int line, int column) {
-	int output = -1;
+Day9::ValueLocationMatrix Day9::Down(std::vector<std::vector<int>>& matrix, size_t line, size_t column) {
+	ValueLocationMatrix output(-1, -1, -1);
 
 	if (line < (matrix.size() - 1)) {
-		output = matrix[++line][column];
+		++line;
+		output.value = matrix[line][column];
+		output.line = line;
+		output.column = column;
 	}
 
 	return output;
 }
 
-int Day9::Left(std::vector<std::vector<int>>& matrix, int line, int column) {
-	int output = -1;
+Day9::ValueLocationMatrix Day9::Left(std::vector<std::vector<int>>& matrix, size_t line, size_t column) {
+	ValueLocationMatrix output(-1, -1, -1);
 
 	if (column > 0) {
-		output = matrix[line][--column];
+		--column;
+		output.value = matrix[line][column];
+		output.line = line;
+		output.column = column;
 	}
 
 	return output;
 }
 
-int Day9::Right(std::vector<std::vector<int>>& matrix, int line, int column) {
-	int output = -1;
+Day9::ValueLocationMatrix Day9::Right(std::vector<std::vector<int>>& matrix, size_t line, size_t column) {
+	ValueLocationMatrix output(-1, -1, -1);
 
 	if (column < (matrix[line].size() - 1)) {
-		output = matrix[line][++column];
+		++column;
+		output.value = matrix[line][column];
+		output.line = line;
+		output.column = column;
 	}
 
 	return output;
+}
+
+int Day9::CalculateBasinSize(ValueLocationMatrix lowPoint, std::vector<std::vector<int>>& matrix) {
+
+	std::vector<ValueLocationMatrix> elementsInBasin;
+	CalculateBasinSize(lowPoint, matrix, elementsInBasin);
+	return elementsInBasin.size();
+}
+
+void Day9::CalculateBasinSize(ValueLocationMatrix lowPoint, std::vector<std::vector<int>>& matrix, std::vector<ValueLocationMatrix>& elementsInBasin) {
+	
+	for (auto&& element : elementsInBasin) {
+		if (element == lowPoint) {
+			return;
+		}
+	}
+
+	if (lowPoint.value == -1 || lowPoint.value == 9) {
+		return;
+	}
+
+	elementsInBasin.push_back(lowPoint);
+	CalculateBasinSize(Up(matrix,lowPoint.line, lowPoint.column), matrix, elementsInBasin);
+	CalculateBasinSize(Down(matrix, lowPoint.line, lowPoint.column), matrix, elementsInBasin);
+	CalculateBasinSize(Left(matrix, lowPoint.line, lowPoint.column), matrix, elementsInBasin);
+	CalculateBasinSize(Right(matrix, lowPoint.line, lowPoint.column), matrix, elementsInBasin);
 }
