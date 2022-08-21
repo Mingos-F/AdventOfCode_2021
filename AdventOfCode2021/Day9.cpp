@@ -5,7 +5,6 @@
 #include <string>
 #include <numeric>
 #include "Day9.h"
-#include "Functions.h"
 
 void Day9::Solve() {
 
