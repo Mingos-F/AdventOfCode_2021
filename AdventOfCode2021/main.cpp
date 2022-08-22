@@ -10,12 +10,14 @@
 //#include "Day7.h"
 //#include "Day8.h"
 //#include "Day9.h"
-#include "Day10.h";
+//#include "Day10.h"
+#include "Day11.h"
+
 	
 int main() {
 
 	auto start = std::chrono::high_resolution_clock::now();
-	Day10 d;
+	Day11 d;
 	d.Solve();
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

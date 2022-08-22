@@ -131,6 +131,7 @@
   <ItemGroup>
     <None Include="Day1.input" />
     <None Include="Day10.input" />
+    <None Include="Day11.input" />
     <None Include="Day2.input" />
     <None Include="Day3.input" />
     <None Include="Day4.input" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Day10.cpp" />
+    <ClCompile Include="Day11.cpp" />
     <ClCompile Include="Day4.cpp" />
     <ClCompile Include="Day5.cpp" />
     <ClCompile Include="Day6.cpp" />
@@ -158,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="Day1.h" />
     <ClInclude Include="Day10.h" />
+    <ClInclude Include="Day11.h" />
     <ClInclude Include="Day2.h" />
     <ClInclude Include="Day3.h" />
     <ClInclude Include="Day5.h" />
