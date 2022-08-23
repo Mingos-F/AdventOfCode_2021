@@ -13,13 +13,14 @@
 //#include "Day10.h"
 //#include "Day11.h"
 //#include "Day12.h"
-#include "Day13.h"
+//#include "Day13.h"
+#include "Day14.h"
 
 	
 int main() {
 
 	auto start = std::chrono::high_resolution_clock::now();
-	Day13 d;
+	Day14 d;
 	d.Solve();
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
