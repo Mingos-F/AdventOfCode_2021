@@ -132,6 +132,7 @@
     <None Include="Day1.input" />
     <None Include="Day10.input" />
     <None Include="Day11.input" />
+    <None Include="Day13.input" />
     <None Include="Day2.input" />
     <None Include="Day3.input" />
     <None Include="Day4.input" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Day11.cpp" />
     <ClCompile Include="Day12.cpp" />
     <ClCompile Include="Day12.input" />
+    <ClCompile Include="Day13.cpp" />
     <ClCompile Include="Day4.cpp" />
     <ClCompile Include="Day5.cpp" />
     <ClCompile Include="Day6.cpp" />
@@ -164,6 +166,7 @@
     <ClInclude Include="Day10.h" />
     <ClInclude Include="Day11.h" />
     <ClInclude Include="Day12.h" />
+    <ClInclude Include="Day13.h" />
     <ClInclude Include="Day2.h" />
     <ClInclude Include="Day3.h" />
     <ClInclude Include="Day5.h" />
@@ -172,6 +175,10 @@
     <ClInclude Include="Day8.h" />
     <ClInclude Include="Day9.h" />
     <ClInclude Include="Functions.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AdventOfCode2021.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
