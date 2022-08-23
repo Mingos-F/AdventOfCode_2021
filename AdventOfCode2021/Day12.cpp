@@ -112,7 +112,7 @@ void Day12::CalculatePaths(bool revisit) {
 					}
 				}
 
-				// this means it either is a upercase node or the first time connection to a lower case node
+				// this means it either is a upercase node or the first time connection to a lower case node (second time also possible if revisited = true)
 				auto currentPath = path;
 				currentPath.push_back(node);
 				currentPaths.push_back(currentPath);
