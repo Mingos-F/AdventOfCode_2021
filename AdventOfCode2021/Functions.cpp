@@ -33,9 +33,3 @@ std::vector<std::string> Functions::SplitStr(std::string str, std::string deli =
     output.push_back(str.substr(start, end - start));
     return output;
 }
-
-std::string Functions::ReturnString(char c) {
-    std::string s = "";
-    s = c;
-    return s;
-}

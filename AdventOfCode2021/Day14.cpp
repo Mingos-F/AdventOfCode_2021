@@ -10,7 +10,7 @@
 
 void Day14::Solve() {
 	Calculate(10);
-	//Calculate(40);
+	Calculate(40);
 }
 
 void Day14::Calculate(int nSteps) {
@@ -41,39 +41,55 @@ void Day14::Calculate(int nSteps) {
 		}
 	}
 
+	auto pairCount = std::unordered_map<std::string, int64_t>{};
+
+	for (size_t i = 0; i + 1 < polymer.size(); i++)
+	{
+		auto pair = polymer.substr(i, 2);
+		if (pairInsertionRules.find(pair) != pairInsertionRules.end()) {
+			pairCount.try_emplace(pair,0);
+			++pairCount[pair];
+		}
+	}
+
+
 
 	for (size_t step = 0; step < nSteps; step++)
 	{
-		for (size_t i = 0; i < polymer.size() - 1; i++)
-		{
-			std::string pair = f.ReturnString(polymer[i]) + f.ReturnString(polymer[i + 1]);
+		auto nextPairCount = std::unordered_map<std::string, int64_t>{};
 
-			for (auto& rule : pairInsertionRules)
-			{
-				if (rule.first == pair) {
-					polymer.insert(i + 1, f.ReturnString(rule.second));
-					i++;
-				}
-			}
+		for (auto& count : pairCount) {
+
+			const auto currentPair = count.first;
+			const auto currentCount = count.second;
+			const auto insertChar = pairInsertionRules.at(currentPair);
+
+			auto firstPair = std::string{ currentPair[0],insertChar };
+			nextPairCount.try_emplace(firstPair, 0);
+			nextPairCount[firstPair] += currentCount;
+
+			auto secondPair = std::string{ insertChar, currentPair[1] };
+			nextPairCount.try_emplace(secondPair, 0);
+			nextPairCount[secondPair] += currentCount;
 		}
+
+		pairCount.swap(nextPairCount);
 	}
 
-	int64_t max = 0;
-	int64_t min = INT64_MAX;
-
-	for (auto& letter : pairInsertionRules)
+	std::unordered_map<char, int64_t> charCount;
+	charCount[polymer[0]] = 1;
+	for (auto& count : pairCount)
 	{
-		int64_t count = std::count(polymer.begin(), polymer.end(), letter.second);
-
-		if (count > max) {
-			max = count;
-		}
-
-		if (count < min) {
-			min = count;
-		}
+		const auto currentPair = count.first;
+		const auto currentCount = count.second;
+		charCount.try_emplace(currentPair[1], 0);
+		charCount[currentPair[1]] += currentCount;
 	}
 
-	std::cout << "Most common element minus least common element is: " << max - min << std::endl;
+	auto compare = [](const auto& left, const auto& right) { return left.second < right.second; };
+	const auto& min = std::min_element(charCount.begin(), charCount.end(), compare);
+	const auto& max = std::max_element(charCount.begin(), charCount.end(), compare);
+
+	std::cout << "Most common element minus least common element is: " << max->second - min->second << std::endl;
 
 }
